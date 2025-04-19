@@ -1,0 +1,42 @@
+PRACTICAL NO 4
+AIM :  Evaluation Metrics for IR Systems 
+•Calculate precision, recall, and F-measure for a given set of retrieval results. 
+•Use an evaluation toolkit to measure average precision and other evaluation metrics.
+
+SOLUTION:
+
+1) Calculate precision, recall, and F-measure for a given set of retrieval results.
+INPUT:
+def calculate_metrics(retrieved_set, relevant_set):
+    tp = len(retrieved_set & relevant_set)  # True Positives
+    fp = len(retrieved_set - relevant_set)  # False Positives
+    fn = len(relevant_set - retrieved_set)  # False Negatives
+    
+    print(f"True Positive: {tp}\nFalse Positive: {fp}\nFalse Negative: {fn}\n")
+    
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+    f_measure = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+    
+    return precision, recall, f_measure
+
+# Example input
+retrieved_set = {"doc1", "doc2", "doc3"}  # Predicted set
+relevant_set = {"doc1", "doc4"}           # Relevant set
+
+# Calculate and display metrics
+precision, recall, f_measure = calculate_metrics(retrieved_set, relevant_set)
+print(f"Precision: {precision}\nRecall: {recall}\nF-measure: {f_measure}")
+OUTPUT:
+
+
+2) Use an evaluation toolkit to measure average precision and other evaluation metrics.
+INPUT:
+from sklearn.metrics import average_precision_score
+y_true = [0, 1, 1, 0, 1, 1] #Binary Prediction
+y_scores = [0.1, 0.4, 0.35, 0.8, 0.65, 0.9] #Model's estimation score
+average_precision = average_precision_score(y_true, y_scores)
+print(f'Average precision-recall score: {average_precision}')
+
+OUTPUT:
+ 
