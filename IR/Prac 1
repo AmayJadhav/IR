@@ -1,0 +1,95 @@
+PRACTICAL NO 1
+AIM:  Document Indexing and Retrieval 
+1. Implement an inverted index construction algorithm. 
+2. Build a simple document retrieval system using the constructed index.
+
+SOLUTION: 
+
+1. Implement an inverted index construction algorithm. 
+INPUT:
+document1 = "The quick brown fox jumped over the lazy dog"
+document2 = "The lazy dog slept in the sun"
+
+import nltk
+from nltk.corpus import stopwords
+
+stop_words = set(stopwords.words('english'))
+
+# Tokenize and filter stopwords
+tokens1 = [word for word in document1.lower().split() if word not in stop_words]
+tokens2 = [word for word in document2.lower().split() if word not in stop_words]
+
+# Build inverted index and occurrence counts
+inverted_index = {}
+occurrences = {"Document 1": {}, "Document 2": {}}
+
+for term in set(tokens1 + tokens2):
+    inverted_index[term] = []
+    if term in tokens1:
+        inverted_index[term].append("Document 1")
+        occurrences["Document 1"][term] = tokens1.count(term)
+    if term in tokens2:
+        inverted_index[term].append("Document 2")
+        occurrences["Document 2"][term] = tokens2.count(term)
+
+# Print results
+print("Inverted Index:", inverted_index)
+print("Occurrences in Document 1:", occurrences["Document 1"])
+print("Occurrences in Document 2:", occurrences["Document 2"])
+
+# Print inverted index with occurrences
+for term, docs in inverted_index.items():
+    print(f"{term} ->", end="")
+    print(", ".join(f"{doc}({occurrences[doc].get(term, 0)})" for doc in docs))
+
+print("Performed by 740_Pallavi & 743_Deepak")
+
+OUTPUT:
+
+
+2. Build a simple document retrieval system using the constructed index.
+INPUT:
+import re
+from collections import defaultdict
+
+class DocumentRetrievalSystem:
+    def __init__(self):
+        self.index = defaultdict(list)
+        self.documents = []
+
+    def add_documents(self, documents):
+        for doc_id, document in enumerate(documents):
+            self.documents.append(document)
+            for term in self.tokenize(document):
+                self.index[term].append(doc_id)
+
+    def search(self, query):
+        query_terms = self.tokenize(query)
+        result_docs = set(self.index[query_terms[0]]) if query_terms and query_terms[0] in self.index else set()
+        for term in query_terms[1:]:
+            result_docs &= set(self.index[term])
+        return [self.documents[doc_id] for doc_id in result_docs]
+
+    @staticmethod
+    def tokenize(text):
+        return re.findall(r'\b\w+\b', text.lower())
+
+if __name__ == "__main__":
+    retrieval_system = DocumentRetrievalSystem()
+    retrieval_system.add_documents([
+        "This is the first document",
+        "Python is a popular programming language",
+        "Document retrieval systems are important"
+    ])
+
+    query = "is"
+    results = retrieval_system.search(query)
+
+    if results:
+        print(f"Search results for '{query}':")
+        for result in results:
+            print("-", result)
+    else:
+        print(f"No results found for '{query}'.")
+OUTPUT:
+
